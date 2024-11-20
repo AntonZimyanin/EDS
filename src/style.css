@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  max-width: 50rem;
+  margin: 0 auto;
+  background-color: #242424;
+}
+p, h3, span {
+  color: white;
+}
+
