@@ -51,7 +51,7 @@ export async function getKeys(): Promise<{ id: number; publicKey: CryptoKey; pri
 }
 
 function callOnStore(fn__: (store: IDBObjectStore) => void) {
-    const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    const indexedDB = window.indexedDB;
 
     const conn = indexedDB.open("crypto_store", 1);
 
