@@ -18,6 +18,7 @@ import Upload from "@/components/Upload.vue";
 
 //Utils 
 import { verifyFile } from "@/utils/crypto";
+import { getKeys, setInitializationFlag, getInitializationFlag } from "@/utils/index_db";
 
 //router
 const router = useRouter();
@@ -62,7 +63,7 @@ const checkSignature = async (file: File) => {
     try {
         fileUrl.value = await verifyFile(file);
         const cryptoStore = useCryptoStore();
-        
+
         signatureValid.value = true;
     } catch (err) {
         if ((err as Error).message === "Signature verification failed.") {
@@ -77,18 +78,31 @@ const checkSignature = async (file: File) => {
 };
 
 
-onMounted(() => {
+onMounted(async () => {
     const fileStore = useFileStore();
     fileStore.setFile(null);
 
     const cryptoStore = useCryptoStore();
-    
-    const pubKey = cryptoStore.getPublicKey();
-    if (null === pubKey) {
-        const publicKeyPem = import.meta.env.PUBLIC_KEY;
-        const privateKeyPem = import.meta.env.PRIVATE_KEY;
 
-        cryptoStore.handleKeyPair(publicKeyPem, privateKeyPem);
+    try {
+        const isKeys = await getInitializationFlag(); // Ожидаем выполнения Promise
+
+        if (!isKeys) {
+            await setInitializationFlag(); // Устанавливаем флаг
+            await cryptoStore.generateKeyPair(); // Генерируем ключи
+            return;
+        }
+
+        const pubKey = cryptoStore.getPublicKey();
+
+        if (pubKey !== null) {
+            return;
+        }
+
+        const { publicKey, privateKey } = await getKeys(); // Ожидаем получения ключей
+        cryptoStore.setKeyPair(publicKey, privateKey); // Устанавливаем ключи в store
+    } catch (error) {
+        console.error("Failed to initialize keys or handle crypto store:", error);
     }
 });
 </script>
@@ -98,26 +112,22 @@ onMounted(() => {
         <div class="flex-row mr-4 ml-4">
             <Upload :title="'Sign PDF Document'" @upload:file="fileProcess" />
         </div>
-        
+
         <div class="flex-row mr-4 ml-4">
             <Upload :title="'Verify the Document'" @upload:file="checkSignature" />
         </div>
-        
+
 
         <div v-if="isChecked" class="mt-4 sm:mt-2">
             <p class="text-lg sm:text-base font-medium pr-4 pl-4 pt-2">
-                Signature is 
+                Signature is
                 <span class="" :class="signatureValid ? 'text-green-600' : 'text-red-600'">
                     {{ signatureValid ? "valid" : "invalid" }}.
                 </span>
             </p>
             <div class="mt-2 pr-4 pl-4 pt-2">
-                <a v-if="signatureValid" 
-                   :href="fileUrl" 
-                   :download="checkedFileName" 
-                   target="_blank" 
-                   type="application/pdf"
-                   class="text-blue-600 underline hover:text-blue-800">
+                <a v-if="signatureValid" :href="fileUrl" :download="checkedFileName" target="_blank"
+                    type="application/pdf" class="text-blue-600 underline hover:text-blue-800">
                     {{ checkedFileName }}
                 </a>
             </div>
@@ -128,5 +138,3 @@ onMounted(() => {
         </p>
     </div>
 </template>
-
-

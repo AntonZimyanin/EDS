@@ -4,25 +4,42 @@ import { RouterView, useRoute } from 'vue-router';
 import { useFileStore } from '@/stores/fileStore';
 import { useCryptoStore } from '@/stores/cryptoStore';
 
+import { getKeys, setInitializationFlag, getInitializationFlag } from './utils/index_db';
+
 const route = useRoute();
 
 const showLink = ref(route.path !== '/home');
 
-onMounted(() => {
+onMounted(async () => {
     const fileStore = useFileStore();
     fileStore.setFile(null);
 
     const cryptoStore = useCryptoStore();
 
-    const pubKey = cryptoStore.getPublicKey();
-    if (null === pubKey) {
+    try {
+        const isKeys = await getInitializationFlag();
+        (isKeys);
+        
+        if (!isKeys) {
+            await setInitializationFlag(); 
+            await cryptoStore.generateKeyPair(); 
+            return;
+        }
 
-        const publicKeyPem = import.meta.env.PUBLIC_KEY;
-        const privateKeyPem = import.meta.env.PRIVATE_KEY;
+        const pubKey = cryptoStore.getPublicKey();
 
-        cryptoStore.handleKeyPair(publicKeyPem, privateKeyPem);
+        if (pubKey !== null) {
+            return;
+        }
+
+        const { publicKey, privateKey } = await getKeys();
+        
+        cryptoStore.setKeyPair(publicKey, privateKey); // Устанавливаем ключи в store
+    } catch (error) {
+        console.error("Failed to initialize keys or handle crypto store:", error);
     }
 });
+
 </script>
 
 <template>
