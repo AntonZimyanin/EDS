@@ -15,10 +15,4 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
-    build: {
-        outDir: 'dist', // Output directory
-        rollupOptions: {
-            input: fileURLToPath(new URL(__dirname, 'index.html')),
-        },
-    },
 });

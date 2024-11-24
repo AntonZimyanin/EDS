@@ -9,7 +9,7 @@ import { getKeys, setInitializationFlag, getInitializationFlag } from './utils/i
 const route = useRoute();
 const showLink = ref(false);
 
-watch(route, (to, from) => {
+watch(route, (to) => {
     showLink.value = to.path !== '/home';
 });
 

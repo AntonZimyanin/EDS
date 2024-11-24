@@ -27,3 +27,5 @@ dist
 .vscode
 .vscode/
 .idea
+# Local Netlify folder
+.netlify
