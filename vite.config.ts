@@ -5,19 +5,20 @@ import vue from '@vitejs/plugin-vue';
 
 // https://vite.dev/config/
 export default defineConfig({
+    plugins: [vue()],
+    base: '/eds/',
+    server: {
+        port: 3000,
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
-    plugins: [vue()],
-
-    server: {
-        host: '0.0.0.0', 
-        port: 5174,
+    build: {
+        outDir: 'dist', // Output directory
+        rollupOptions: {
+            input: fileURLToPath(new URL(__dirname, 'index.html')),
+        },
     },
-    define: {
-        'process.env': process.env,
-    },
-    base: '.',
 });
