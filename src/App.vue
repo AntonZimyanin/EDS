@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 import { useFileStore } from '@/stores/fileStore';
 import { useCryptoStore } from '@/stores/cryptoStore';
@@ -7,8 +7,12 @@ import { useCryptoStore } from '@/stores/cryptoStore';
 import { getKeys, setInitializationFlag, getInitializationFlag } from './utils/index_db';
 
 const route = useRoute();
+const showLink = ref(false);
 
-const showLink = ref(route.path !== '/home');
+watch(route, (to, from) => {
+    showLink.value = to.path !== '/home';
+});
+
 
 onMounted(async () => {
     const fileStore = useFileStore();
@@ -44,10 +48,17 @@ onMounted(async () => {
 
 <template>
     <div>
-        <nav v-if="true" class="ml-4 mt-4 mr-4">
-            <RouterLink
-                style="margin-bottom: 1rem !important; background-color: white; padding-left: 0.5rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem;"
-                class="rounded-lg" to="/home">↲ to home</RouterLink>
+        <nav class="ml-4 mt-4 mr-4">
+            <div>
+                <RouterLink
+                    v-if="showLink" 
+                    style="margin-bottom: 1rem !important; background-color: white; padding-left: 0.5rem; padding-right: 1rem; padding-top: 0.5rem; padding-bottom: 0.5rem;"
+                    class="rounded-lg"
+                    to="/home">
+                    ↲ to home
+                </RouterLink>
+                <div v-else class="m-[1rem]"> &nbsp; </div>
+            </div>
             <hr style="margin-top: 1rem; background-color: white;" class="h-px pr-2 bg-white border-0 dark:bg-white">
         </nav>
     </div>

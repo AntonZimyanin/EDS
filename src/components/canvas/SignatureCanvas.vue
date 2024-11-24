@@ -249,13 +249,15 @@ const handleDownload = () => {
         </div>
 
         <p v-if="isSave">
-            <a v-if="isIosOrSafari" @click="handleDownload" href="javascript:void(0);" type="application/pdf" download>
-                {{ signedFileName }}
-            </a>
+        <p class="text-white font-bold">ckick to link for dowload document</p>
+        <a class='btn-blue' v-if="isIosOrSafari" @click="handleDownload" href="javascript:void(0);"
+            type="application/pdf" download>
+            {{ signedFileName }}
+        </a>
 
-            <a v-else :href="fileUrl" target="_blank" type="application/pdf" download>
-                {{ signedFileName }}
-            </a>
+        <a class='btn-blue' v-else :href="fileUrl" target="_blank" type="application/pdf" download>
+            {{ signedFileName }}
+        </a>
         </p>
         <p v-if="!!errorMsg">
             {{ errorMsg }}
@@ -263,3 +265,10 @@ const handleDownload = () => {
     </div>
 
 </template>
+
+
+<style scoped>
+.btn-blue {
+    @apply text-white font-bold underline;
+}
+</style>
