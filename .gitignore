@@ -13,6 +13,7 @@ dist
 *.local
 
 # Editor directories and files
+.vscode
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -24,8 +25,6 @@ dist
 *.sw?
 
 .env
-.vscode
-.vscode/
 .idea
 # Local Netlify folder
 .netlify
