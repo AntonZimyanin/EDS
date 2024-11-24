@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-            path: ./eds
+            path: ./
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -24,17 +24,17 @@ jobs:
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
         with:
-            path: ./eds
+            path: ./
 
       - name: Build project
         run: npm run build
-        working-directory: ./eds
+        working-directory: ./
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v3
         with:
           name: production-files
-          path: ./eds/dist
+          path: ./dist
 
   deploy:
     name: Deploy
