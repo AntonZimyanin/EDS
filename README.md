@@ -18,7 +18,7 @@ Explore the application live at:
 2. Follow the guided steps to sign the document or check its signature's validity.
 3. Download the signed or verified document.
 
-## Screenshots
+## Block Diagram
 
 ### Document Signing Process
 ![Document Signing Process](./.assets/process-signing-pdf.jpg)
