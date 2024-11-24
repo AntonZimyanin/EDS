@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug workpace
+        run: ls -R /home/runner/work/eds
+
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
